@@ -2,24 +2,20 @@
 #include "leg.hpp"
 #include <iostream>
 #include <cmath>
-
+#include "Hexapod.hpp"
 
 int main()
 {
+    leg_move::Hexapod bot(18.0, 55.0, 75.0);
 
-    leg_move::leg testLeg(18.0, 55.0, 75.0);
-    leg_move::JointAngles result = testLeg.solverIK(90.0, 0.0, 0.0);
-
-    std::cout << "=== Test 1: reachable target ===\n";
-    std::cout << "coxa:  " << result.coxa  * 180.0 / M_PI << " deg\n";
-    std::cout << "femur: " << result.femur * 180.0 / M_PI << " deg\n";
-    std::cout << "tibia: " << result.tibia * 180.0 / M_PI << " deg\n";
-
-    std::cout << "\n=== Test 2: unreachable target ===\n";
-    leg_move::JointAngles result2 = testLeg.solverIK(500.0, 0.0, 0.0);
-    std::cout << "coxa:  " << result2.coxa  * 180.0 / M_PI << " deg\n";
-    std::cout << "femur: " << result2.femur * 180.0 / M_PI << " deg\n";
-    std::cout << "tibia: " << result2.tibia * 180.0 / M_PI << " deg\n";
-
+    for (double t = 0.0; t < 6.3; t += 1.0)
+    {
+        bot.update_legs(t);
+        auto LF = bot.getLF();
+        std::cout << "t=" << t
+                  << "  FL femur=" << LF.femur * 180.0 / M_PI
+                  << "  FL tibia=" << LF.tibia * 180.0 / M_PI
+                  << "\n";
+    }
     return 0;
 }

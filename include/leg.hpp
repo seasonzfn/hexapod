@@ -17,6 +17,7 @@ namespace leg_move
     public:
         leg(double l1, double l2, double l3) : L1(l1), L2(l2), L3(l3) {}
         JointAngles solverIK(double x, double y, double z);
+        JointAngles Cur_Angles() const { return Cur_Ang; }
 
     private:
         double L1 , L2 , L3; //LENGTH OF EACH BONES

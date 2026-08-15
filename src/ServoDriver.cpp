@@ -79,4 +79,26 @@ namespace leg_move
         writeRegister(baseReg + 2, ticks & 0xFF);        // OFF_L
         writeRegister(baseReg + 3, (ticks >> 8) & 0x0F); // OFF_H
     }
+
+    void ServoDriver::setPulseMs(int channel, double pulseMs)
+    {
+        // Assumes PWM frequency already set (e.g., 50Hz -> 20ms period)
+        int ticks = static_cast<int>((pulseMs / 20.0) * 4096.0);
+        uint8_t baseReg = 0x06 + 4 * channel;
+
+        writeRegister(baseReg, 0);
+        writeRegister(baseReg + 1, 0);
+        writeRegister(baseReg + 2, ticks & 0xFF);
+        writeRegister(baseReg + 3, (ticks >> 8) & 0x0F);
+    }
+
+    void ServoDriver::setAllPulseMs(double pulseMs)
+    {
+        int ticks = static_cast<int>((pulseMs / 20.0) * 4096.0);
+        // ALL_LED registers start at 0xFA
+        writeRegister(0xFA, 0); // ALL_LED_ON_L
+        writeRegister(0xFB, 0); // ALL_LED_ON_H
+        writeRegister(0xFC, ticks & 0xFF); // ALL_LED_OFF_L
+        writeRegister(0xFD, (ticks >> 8) & 0x0F); // ALL_LED_OFF_H
+    }
 }

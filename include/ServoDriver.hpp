@@ -11,6 +11,10 @@ namespace leg_move
         ~ServoDriver();
 
         void setAngle(int channel, double angleRadians);
+        // Set pulse width in milliseconds for a specific channel (useful for continuous-rotation servos)
+        void setPulseMs(int channel, double pulseMs);
+        // Set same pulse width on all channels at once
+        void setAllPulseMs(double pulseMs);
 
     private:
         int fileDescriptor;

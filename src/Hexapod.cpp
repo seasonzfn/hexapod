@@ -38,7 +38,7 @@ namespace leg_move
 	                              double direction, double stepLength, double stepHeight,
 	                              double stanceRatio, double& x, double& y, double& z)
 	{
-		double phase = std::fmod(time * walkSpeed_, 1.0);
+		double phase = std::fmod(time * walkSpeed_ + phaseOffset, 1.0);
 		if (phase < 0.0)
 			phase += 1.0;
 
@@ -136,6 +136,7 @@ namespace leg_move
 
 	void Hexapod::applyStand(double time)
 	{
+	    (void)time;
 		double baseX[6] = {80.0, 60.0, 40.0, 80.0, 60.0, 40.0};
 		double baseY[6] = {35.0, 35.0, 35.0, -35.0, -35.0, -35.0};
 		double z = -10.0;

@@ -1,21 +1,23 @@
-#define _USE_MATH_DEFINES
+#include "ServoDriver.hpp"
 #include "leg.hpp"
+#include "constants.hpp"
 #include <iostream>
-#include <cmath>
-#include "Hexapod.hpp"
 
 int main()
 {
-    leg_move::Hexapod bot(18.0, 55.0, 75.0);
+    try {
+        std::cout << "Opening I2C connection to PCA9685...\n";
+        leg_move::ServoDriver driver;
 
-    for (double t = 0.0; t < 6.3; t += 1.0)
-    {
-        bot.update_legs(t);
-        auto LF = bot.getLF();
-        std::cout << "t=" << t
-                  << "  FL femur=" << LF.femur * 180.0 / M_PI
-                  << "  FL tibia=" << LF.tibia * 180.0 / M_PI
-                  << "\n";
+        std::cout << "Moving channel 0 to 90 degrees...\n";
+        driver.setAngle(0, leg_move::PI / 2.0); // 90 degrees, in radians
+
+        std::cout << "Command sent. Check the servo.\n";
     }
+    catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
+        return 1;
+    }
+
     return 0;
 }

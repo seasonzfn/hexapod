@@ -3,6 +3,10 @@
 #include <algorithm>
 #include <iostream>
 
+namespace {
+    constexpr double PI = 3.14159265358979323846;
+}
+
 
 namespace leg_move
 {
@@ -28,7 +32,7 @@ namespace leg_move
             return Cur_Ang; // Return current angles if out of reach
         }
         double femur_angle = law_of_cosines(L3, L2, d) + atan2(s, r);
-        double tibia_angle = M_PI - law_of_cosines(d, L2, L3);
+        double tibia_angle = PI - law_of_cosines(d, L2, L3);
 
         Cur_Ang.coxa = coxa_angle;
         Cur_Ang.femur = femur_angle;

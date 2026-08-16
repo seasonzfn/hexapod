@@ -1,44 +1,58 @@
 #include "ServoDriver.hpp"
 #include "leg.hpp"
 #include "constants.hpp"
-#include <iostream>
 #include <thread>
+#include <iostream>
 #include <chrono>
 
-int main()
-{
-    try {
-        std::cout << "Opening I2C connection to PCA9685...\n";
+
+
+int main(){
+
+    try{
         leg_move::ServoDriver driver;
+        auto start = std::chrono::steady_clock::now();
 
-        std::cout << "Starting per-channel cycle test\n";
+        int laststep = -1;
+        
+        while(true)
+        {
+            auto now = std::chrono::steady_clock::now();
+            double elapsedseconds = std::chrono::duration<double>(now - start).count();
 
-        // Pulse widths (ms). Adjust for your hardware. 1.5ms is usually stop/neutral.
-        double forwardMs = 2.0;
-        double stopMs = 1.5;
+            int currentstep = static_cast<int>(elapsedseconds) % 4; 
 
-        // Duration for one "cycle" (seconds). For continuous-rotation servos
-        // a "cycle" is defined here as running the motor for this duration.
-        int cycleSeconds = 5;
-
-        auto runChannelCycle = [&](int channel, double runPulseMs, int seconds){
-            std::cout << "Running channel " << channel << " for " << seconds << "s\n";
-            driver.setPulseMs(channel, runPulseMs);
-            std::this_thread::sleep_for(std::chrono::seconds(seconds));
-            driver.setPulseMs(channel, stopMs);
-            std::cout << "Channel " << channel << " stopped\n";
-        };
-
-        // Run channel 0, then channel 1 sequentially
-        runChannelCycle(0, forwardMs, cycleSeconds);
-        runChannelCycle(1, forwardMs, cycleSeconds);
-
-        std::cout << "Per-channel cycle test complete.\n";
+            if(currentstep != laststep)
+            {
+                if(currentstep == 0) {
+                    std::cout << "Step 0: Move leg to position A" << std::endl;
+                    driver.setAngle(0, leg_move::PI); // Example angle for motor A
+                }
+                else if(currentstep == 1) {
+                    std::cout << "Step 1: Move leg to position B" << std::endl;
+                    driver.setAngle(1, leg_move::PI); // Example angle for motor B
+                }
+                else if(currentstep == 2) {
+                    std::cout << "Step 2: Move leg to position C" << std::endl;
+                    driver.setAngle(0, 0);
+                }
+                else if(currentstep == 3) {
+                    std::cout << "Step 3: Move leg to position D" << std::endl;
+                    driver.setAngle(1, 0);
+                }
+                laststep = currentstep;
+            }
+        
+            std::cout << "Elapsed time: " << elapsedseconds << " seconds" << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
     }
-    catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+    catch(const std::exception& e){
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
-    }
 
+    }
     return 0;
+
+
 }

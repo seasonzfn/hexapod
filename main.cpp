@@ -1,6 +1,7 @@
 #include "pico/stdlib.h"
 #include <algorithm>
 #include <iostream>
+#include <limits>
 #include <stdio.h>
 
 #include "hardware/i2c.h"
@@ -67,22 +68,30 @@ int main() {
     // The PCA9685 output is the only available position reference; standard
     // servos do not report their physical angle.
     if (!motor1.adoptPwmCount(count1)) {
-        motor1.setAngle(20);
+        motor1.setAngle(90);
         std::cout << "motor1: no previous pulse; using 90 degrees as the base\n";
     }
     if (!motor2.adoptPwmCount(count2)) {
-        motor2.setAngle(20);
+        motor2.setAngle(90);
         std::cout << "motor2: no previous pulse; using 90 degrees as the base\n";
     }
 
     const float base1 = motor1.angle();
     const float base2 = motor2.angle();
+    int angle = 0;
     std::cout << "Base angles: " << base1 << ", " << base2 << "\n";
 
     while (true) {
-        std::cout << "Moving both servos to base +20 degrees\n";
-        moveTo(motor1, base1 - 60);
-        moveTo(motor2, base2 - 70);
+        std::cout << "Enter angle offset from the startup position (degrees):\n";
+        if (!(std::cin >> angle)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input; enter a number.\n";
+            continue;
+        }
+
+        moveTo(motor1, base1 + angle);
+        moveTo(motor2, base2 + angle);
         sleep_ms(1000);
     }
 }

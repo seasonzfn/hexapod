@@ -21,6 +21,8 @@ private:
     static constexpr uint16_t MAX_PULSE_US = 2000;
 
     float currentAngle_ = 0.0f;
+    bool adoptPwmCount(uint16_t offCount);   // true if a valid pulse was found
+    float angle() const { return currentAngle_; }
 };
 
 #endif

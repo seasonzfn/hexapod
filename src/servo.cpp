@@ -37,3 +37,14 @@ void Servo::moveRelative(float degrees) {
     // Move relative to the last software-commanded angle.
     setAngle(currentAngle_ + degrees);
 }
+
+bool Servo::adoptPwmCount(uint16_t offCount) {
+    if (offCount == 0) return false;
+
+    float pulseUs = offCount * static_cast<float>(PWM_PERIOD_US) / 4096.0f;
+    if (pulseUs < MIN_PULSE_US || pulseUs > MAX_PULSE_US) return false;
+
+    currentAngle_ = (pulseUs - MIN_PULSE_US) * 180.0f / (MAX_PULSE_US - MIN_PULSE_US);
+    setPulseWidth(static_cast<uint16_t>(pulseUs + 0.5f));  // re-send same pulse, no jump
+    return true;
+}

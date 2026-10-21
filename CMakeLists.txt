@@ -11,9 +11,8 @@ set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 add_executable(pca_hexapod
-    main.cpp
-    src/pca9685.cpp
-    src/servo.cpp
+    test.cpp
+    src/sensors.cpp
 )
 
 target_include_directories(pca_hexapod PRIVATE

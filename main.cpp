@@ -33,7 +33,7 @@ static uint16_t readOffCount(uint8_t channel) {
     return static_cast<uint16_t>(((hi & 0x0F) << 8) | lo);
 }
 
-static void moveTo(Servo& servo, float target, float step = 1.0f, uint delayMs = 20) {
+static void moveTo(Servo& servo, float target, float step = 1.0f, uint delayMs = 50) {
     target = std::clamp(target, 0.0f, 180.0f);
     while (true) {
         const float difference = target - servo.angle();
@@ -79,7 +79,8 @@ int main() {
 
     const float base1 = motor1.angle();
     const float base2 = motor2.angle();
-    int angle = 0;
+    int angle1 = 0;
+    int angle2 = 0;
     std::cout << "Base angles: " << base1 << ", " << base2 << "\n";
 
     while (!stdio_usb_connected()) {
@@ -87,16 +88,24 @@ int main() {
     }
 
     while (true) {
-        std::cout << "Enter angle offset from the startup position (degrees):\n" << std::flush;
-        if (!(std::cin >> angle)) {
+        std::cout << "Enter servo 1 angle offset from startup (degrees):\n" << std::flush;
+        if (!(std::cin >> angle1)) {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Invalid input; enter a number.\n";
             continue;
         }
 
-        moveTo(motor1, base1 + angle);
-        moveTo(motor2, base2 + angle);
+        std::cout << "Enter servo 2 angle offset from startup (degrees):\n" << std::flush;
+        if (!(std::cin >> angle2)) {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input; enter a number.\n";
+            continue;
+        }
+
+        moveTo(motor1, base1 + angle1);
+        moveTo(motor2, base2 + angle2);
         sleep_ms(1000);
     }
 }

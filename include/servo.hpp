@@ -11,6 +11,8 @@ public:
     void setPulseWidth(uint16_t pulseUs);
     void setAngle(float angle);
     void moveRelative(float degrees);
+    bool adoptPwmCount(uint16_t offCount);   // true if a valid pulse was found
+    float angle() const { return currentAngle_; }
 
 private:
     PCA9685& driver_;
@@ -21,8 +23,6 @@ private:
     static constexpr uint16_t MAX_PULSE_US = 2000;
 
     float currentAngle_ = 0.0f;
-    bool adoptPwmCount(uint16_t offCount);   // true if a valid pulse was found
-    float angle() const { return currentAngle_; }
 };
 
 #endif

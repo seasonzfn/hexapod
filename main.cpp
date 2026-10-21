@@ -84,15 +84,5 @@ int main() {
         moveTo(motor1, base1 - 60);
         moveTo(motor2, base2 - 70);
         sleep_ms(1000);
-
-        std::cout << "Moving servo 1 to base +35, servo 2 to base +55\n";
-        moveTo(motor1, base1 + 35);
-        moveTo(motor2, base2 + 55);
-        sleep_ms(1000);
-
-        std::cout << "Moving servo 1 to base +50, servo 2 to base +35\n";
-        moveTo(motor1, base1 - 50);
-        moveTo(motor2, base2 - 35);
-        sleep_ms(1000);
     }
 }

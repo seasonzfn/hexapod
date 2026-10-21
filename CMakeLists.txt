@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 add_executable(pca_hexapod
-    src/main.cpp
+    main.cpp
     src/pca9685.cpp
     src/servo.cpp
 )

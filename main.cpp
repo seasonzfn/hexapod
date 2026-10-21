@@ -81,8 +81,8 @@ int main() {
 
     while (true) {
         std::cout << "Moving both servos to base +20 degrees\n";
-        moveTo(motor1, base1 + 20);
-        moveTo(motor2, base2 + 20);
+        moveTo(motor1, base1 - 60);
+        moveTo(motor2, base2 - 70);
         sleep_ms(1000);
 
         std::cout << "Moving servo 1 to base +35, servo 2 to base +55\n";

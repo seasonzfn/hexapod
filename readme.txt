@@ -9,7 +9,7 @@ constants.hpp: defines leg_move::PI used across modules.
 ServoDriver.hpp / ServoDriver.cpp: PCA9685 driver and helper methods to set PWM/pulse widths.
 leg.hpp / leg.cpp: leg class with inverse kinematics (solverIK) and angle storage.
 Hexapod.hpp / Hexapod.cpp: high-level hexapod gait generation and leg-target computation.
-main.cpp: example continuous-test that sets all channels forward then stops.
+main.cpp: starts the sensor-controlled servo program in sensor_servo_control.cpp.
 Key classes & functions
 
 leg_move::ServoDriver (in ServoDriver.hpp / ServoDriver.cpp)
@@ -41,10 +41,7 @@ applyGait, applyTurn, applyDance, applyStand: compute targets for all six legs a
 update_legs(double time): dispatches the appropriate motion routine depending on mode_.
 What main.cpp does now
 
-It creates a leg_move::ServoDriver and runs a simple continuous test:
-driver.setAllPulseMs(forwardMs); — sets all channels to a forward pulse width (example uses 2.0 ms).
-Sleeps 5 seconds, then driver.setAllPulseMs(stopMs); — sets the stop pulse width (~1.5 ms).
-Change forwardMs, stopMs, and sleep duration to match your motor/controller.
+The code in src/sensor_servo_control.cpp initializes the temperature and light sensors, the GP15 touch button, and a PCA9685 servo driver. Touch GP15 to switch between temperature and light control. Readings must change by at least 0.5 C or 5 lux (with an additional 5% light deadband) before moving the servos, which filters small fluctuations. Each threshold-sized change moves motor 1 and motor 2 in opposite directions by 2 degrees. Movement is limited to 45 degrees from each servo's startup position and to the servo's 0-180 degree range.
 How the PCA9685 mapping works (practical)
 
 PCA9685 period at 50 Hz = 20 ms. 4096 ticks per period → ticks = (pulseMs / 20.0) * 4096.

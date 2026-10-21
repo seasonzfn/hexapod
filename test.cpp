@@ -7,11 +7,11 @@
 constexpr uint SDA_PIN = 4;
 constexpr uint SCL_PIN = 5;
 constexpr uint TOUCH_PIN = 15;
-constexpr bool TOUCH_ACTIVE_HIGH = true;   // set false if the pad reads inverted
+constexpr bool TOUCH_ACTIVE_HIGH = true; 
 
 int main() {
     stdio_init_all();
-    sleep_ms(3000);                         // time to open minicom
+    sleep_ms(3000);  
 
     i2c_init(i2c0, 100000);
     gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
@@ -26,7 +26,6 @@ int main() {
     printf("\n=== sensor test ===\n");
     sensors.scan();
 
-    // ---- self checks ----
     float t = 0, lux = 0;
     const bool tempOk = sensors.readTemperature(t);
     printf("[%s] temperature sensor at 0x%02X", tempOk ? "PASS" : "FAIL", SENSOR_TEMP_ADDR);

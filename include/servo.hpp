@@ -1,9 +1,9 @@
 
-#ifndef SERVO_H
-#define SERVO_H
+#ifndef SERVO_HPP
+#define SERVO_HPP
 
 #include <cstdint>
-#include "pca9685.h"
+#include "pca9685.hpp"
 
 class Servo {
 public:

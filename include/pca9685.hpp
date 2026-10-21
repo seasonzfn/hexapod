@@ -1,6 +1,6 @@
 
-#ifndef PCA9685_H
-#define PCA9685_H
+#ifndef PCA9685_HPP
+#define PCA9685_HPP
 
 #include <cstdint>
 #include "hardware/i2c.h"

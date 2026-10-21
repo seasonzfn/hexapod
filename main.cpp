@@ -1,58 +1,50 @@
-#include "ServoDriver.hpp"
-#include "leg.hpp"
-#include "constants.hpp"
-#include <thread>
+#include "pico/stdlib.h"
 #include <iostream>
-#include <chrono>
 
+#include "hardware/i2c.h"
 
+#include "pca9685.hpp"
+#include "servo.hpp"
 
-int main(){
+constexpr uint SDA_PIN = 4;
+constexpr uint SCL_PIN = 5;
 
-    try{
-        leg_move::ServoDriver driver;
-        auto start = std::chrono::steady_clock::now();
+constexpr uint8_t PCA_ADDRESS = 0x40;
+const uint TOUCH_PIN = 15;
 
-        int laststep = -1;
-        
-        while(true)
-        {
-            auto now = std::chrono::steady_clock::now();
-            double elapsedseconds = std::chrono::duration<double>(now - start).count();
+int main() {
+    stdio_init_all();
+    i2c_init(i2c0, 100000);
 
-            int currentstep = static_cast<int>(elapsedseconds) % 4; 
+    gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
 
-            if(currentstep != laststep)
-            {
-                if(currentstep == 0) {
-                    std::cout << "Step 0: Move leg to position A" << std::endl;
-                    driver.setAngle(0, leg_move::PI); // Example angle for motor A
-                }
-                else if(currentstep == 1) {
-                    std::cout << "Step 1: Move leg to position B" << std::endl;
-                    driver.setAngle(1, leg_move::PI); // Example angle for motor B
-                }
-                else if(currentstep == 2) {
-                    std::cout << "Step 2: Move leg to position C" << std::endl;
-                    driver.setAngle(0, 0);
-                }
-                else if(currentstep == 3) {
-                    std::cout << "Step 3: Move leg to position D" << std::endl;
-                    driver.setAngle(1, 0);
-                }
-                laststep = currentstep;
-            }
-        
-            std::cout << "Elapsed time: " << elapsedseconds << " seconds" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        }
+    gpio_pull_up(SDA_PIN);
+    gpio_pull_up(SCL_PIN);
+
+    sleep_ms(1000);
+
+    PCA9685 pca(i2c0, PCA_ADDRESS);
+
+    pca.begin(50);
+
+    Servo motor1(pca, 0);
+    Servo motor2(pca, 1);
+
+    while (true) {
+        std::cout << "Moving both servos to 90 degrees\n";
+        motor1.setAngle(90);
+        motor2.setAngle(90);
+        sleep_ms(1000);
+
+        std::cout << "Moving servo 1 to 45, servo 2 to 135\n";
+        motor1.setAngle(45);
+        motor2.setAngle(135);
+        sleep_ms(1000);
+
+        std::cout << "Moving servo 1 to 135, servo 2 to 45\n";
+        motor1.setAngle(135);
+        motor2.setAngle(45);
+        sleep_ms(1000);
     }
-    catch(const std::exception& e){
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-
-    }
-    return 0;
-
-
 }

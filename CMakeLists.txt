@@ -1,35 +1,31 @@
-cmake_minimum_required(VERSION 3.20)
-project(hexapod LANGUAGES CXX)
 
+cmake_minimum_required(VERSION 3.13)
+
+include(pico_sdk_import.cmake)
+
+project(pca_hexapod C CXX ASM)
+
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
 
-add_executable(hexapod
-    src/Hexapod.cpp
-    src/leg.cpp
-    src/ServoDriver.cpp
-    main.cpp
+pico_sdk_init()
+
+add_executable(pca_hexapod
+    src/main.cpp
+    src/pca9685.cpp
+    src/servo.cpp
 )
 
-target_include_directories(hexapod PRIVATE include)
+target_include_directories(pca_hexapod PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/include
+)
 
-target_compile_features(hexapod PRIVATE "cxx_std_${CMAKE_CXX_STANDARD}")
+target_link_libraries(pca_hexapod
+    pico_stdlib
+    hardware_i2c
+)
 
-if(MSVC)
-    target_compile_options(hexapod PRIVATE /W4)
-else()
-    target_compile_options(hexapod PRIVATE -Wall -Wextra -Wshadow -Wnull-dereference -pedantic)
-endif()
+pico_enable_stdio_usb(pca_hexapod 1)
+pico_enable_stdio_uart(pca_hexapod 0)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    if(MSVC)
-        target_compile_options(hexapod PRIVATE /Od /Zi)
-    else()
-        target_compile_options(hexapod PRIVATE -Og -ggdb3)
-    endif()
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(NOT MSVC)
-        target_compile_options(hexapod PRIVATE -O2)
-    endif()
-endif()
+pico_add_extra_outputs(pca_hexapod)

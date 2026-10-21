@@ -31,7 +31,7 @@ static uint16_t readOffCount(uint8_t channel) {
     return static_cast<uint16_t>(((hi & 0x0F) << 8) | lo);
 }
 
-static void moveTo(Servo& servo, float target, float step = 1.0f, uint delayMs = 15) {
+static void moveTo(Servo& servo, float target, float step = 1.0f, uint delayMs = 50) {
     target = std::clamp(target, 0.0f, 180.0f);
     while (true) {
         const float difference = target - servo.angle();
@@ -67,11 +67,11 @@ int main() {
     // The PCA9685 output is the only available position reference; standard
     // servos do not report their physical angle.
     if (!motor1.adoptPwmCount(count1)) {
-        motor1.setAngle(90);
+        motor1.setAngle(20);
         std::cout << "motor1: no previous pulse; using 90 degrees as the base\n";
     }
     if (!motor2.adoptPwmCount(count2)) {
-        motor2.setAngle(90);
+        motor2.setAngle(20);
         std::cout << "motor2: no previous pulse; using 90 degrees as the base\n";
     }
 

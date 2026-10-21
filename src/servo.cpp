@@ -1,4 +1,3 @@
-
 #include "servo.hpp"
 
 #include <algorithm>
@@ -24,10 +23,17 @@ void Servo::setPulseWidth(uint16_t pulseUs) {
 }
 
 void Servo::setAngle(float angle) {
+    // Absolute software angle mapped to pulse width.
     angle = std::clamp(angle, 0.0f, 180.0f);
 
     float pulse = MIN_PULSE_US +
         (angle / 180.0f) * (MAX_PULSE_US - MIN_PULSE_US);
 
     setPulseWidth(static_cast<uint16_t>(pulse + 0.5f));
+    currentAngle_ = angle;
+}
+
+void Servo::moveRelative(float degrees) {
+    // Move relative to the last software-commanded angle.
+    setAngle(currentAngle_ + degrees);
 }

@@ -23,6 +23,8 @@ target_include_directories(pca_hexapod PRIVATE
 target_link_libraries(pca_hexapod
     pico_stdlib
     hardware_i2c
+    hardware_flash
+    pico_flash
 )
 
 pico_enable_stdio_usb(pca_hexapod 1)

@@ -4,7 +4,7 @@
 #include "hardware/i2c.h"
 
 // Change the temperature address here after running the I2C scan.
-constexpr uint8_t SENSOR_TEMP_ADDR  = 0x45;   // LM75B
+constexpr uint8_t SENSOR_TEMP_ADDR  = 0x49;   // LM75B
 constexpr uint8_t SENSOR_LIGHT_ADDR = 0x52;   // APDS-9306-065
 
 class Sensors {
